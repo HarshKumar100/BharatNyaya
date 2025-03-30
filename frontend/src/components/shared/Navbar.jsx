@@ -9,15 +9,17 @@ import axios from 'axios'
 import { USER_API_END_POINT } from '@/utils/constant'
 import { setUser } from '@/redux/authSlice'
 import { toast } from 'sonner'
-import { PlusSquare } from 'lucide-react'
+import { PlusSquare, Search } from 'lucide-react'
 import { useState } from 'react'
 import CreatePost from '../CreatePost'
+import SearchDialog from '../SearchDialog'
 
 const Navbar = () => {
     const { user } = useSelector(store => store.auth);
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [open, setOpen] = useState(false);
+    const [searchOpen, setSearchOpen] = useState(false);
 
     const logoutHandler = async () => {
         try {
@@ -73,8 +75,15 @@ const Navbar = () => {
                                 </>
                             )
                         }
-
-
+                        <li>
+                            <Button 
+                                variant="ghost" 
+                                size="icon"
+                                onClick={() => setSearchOpen(true)}
+                            >
+                                <Search className="h-5 w-5" />
+                            </Button>
+                        </li>
                     </ul>
                     {
                         !user ? (
@@ -132,7 +141,7 @@ const Navbar = () => {
                         <CreatePost open={open} setOpen={setOpen} />
                 </div>
             </div>
-
+            <SearchDialog open={searchOpen} setOpen={setSearchOpen} />
         </div>
     )
 }

@@ -114,18 +114,28 @@ export const logout = async (req, res) => {
 }
 export const getSuggestedUsers = async (req, res) => {
     try {
-        const suggestedUsers = await User.find({ _id: { $ne: req.id } }).select("-password");
-        if (!suggestedUsers) {
-            return res.status(400).json({
+        const suggestedUsers = await User.find({ _id: { $ne: req.id } })
+            .select('fullname email profile')
+            .sort({ createdAt: -1 });
+
+        if (!suggestedUsers?.length) {
+            return res.status(200).json({
                 message: 'Currently do not have any users',
-            })
-        };
+                users: [],
+                success: true
+            });
+        }
+
         return res.status(200).json({
             success: true,
             users: suggestedUsers
-        })
+        });
     } catch (error) {
         console.log(error);
+        return res.status(500).json({
+            message: 'Error fetching suggested users',
+            success: false
+        });
     }
 };
 export const updateProfile = async (req, res) => {
@@ -188,27 +198,25 @@ export const updateProfile = async (req, res) => {
 }
 export const searchUsers = async (req, res) => {
     try {
-        const searchQuery = req.query.query;
-        if (!searchQuery) {
-            return res.status(400).json({
-                message: 'Search query is required',
-                success: false
-            });
-        }
-
+        const { query } = req.query;
+        
+        // Search users by fullname or email, case-insensitive
         const users = await User.find({
-            username: { $regex: searchQuery, $options: 'i' }
-        }).select('-password');
-
-        return res.status(200).json({
+            $or: [
+                { fullname: { $regex: query, $options: 'i' } },
+                { email: { $regex: query, $options: 'i' } }
+            ]
+        }).select('fullname email profile.profilePicture profile.bio role'); // Only select needed fields
+        
+        res.status(200).json({
             success: true,
             users
         });
     } catch (error) {
-        console.log(error);
-        return res.status(500).json({
-            message: 'Error searching users',
-            success: false
+        res.status(500).json({
+            success: false,
+            message: "Error searching users",
+            error: error.message
         });
     }
 };
@@ -291,12 +299,35 @@ export const editProfile = async (req, res) => {
 export const getProfile = async (req, res) => {
     try {
         const userId = req.params.id;
-        let user = await User.findById(userId).populate({path:'posts', createdAt:-1}).populate('bookmarks');
+        let user = await User.findById(userId)
+            .select('fullname email phoneNumber role profile posts bookmarks followers following')
+            .populate({
+                path: 'posts',
+                options: { sort: { createdAt: -1 } }
+            })
+            .populate('bookmarks');
+
+        if (!user) {
+            return res.status(404).json({
+                message: 'User not found',
+                success: false
+            });
+        }
+
+        // Make sure we have the profile photo URL
+        if (!user.profile) {
+            user.profile = {};
+        }
+
         return res.status(200).json({
             user,
             success: true
         });
     } catch (error) {
         console.log(error);
+        return res.status(500).json({
+            message: 'Error fetching profile',
+            success: false
+        });
     }
 };

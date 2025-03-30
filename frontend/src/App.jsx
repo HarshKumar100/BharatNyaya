@@ -22,6 +22,8 @@ import { setOnlineUsers } from './redux/chatSlice'
 import { setLikeNotification } from './redux/rtnSlice'
 import { io } from 'socket.io-client'
 import { useEffect } from 'react'
+import ProtectedRoutes from './components/ProtectedRoutes'
+import CurrentUserProfile from './components/CurrentUserProfile'
 
 
 const appRouter = createBrowserRouter([
@@ -59,7 +61,19 @@ const appRouter = createBrowserRouter([
   },
   {
     path: "/profile",
-    element: <Profile />
+    element: (
+      <ProtectedRoutes>
+        <CurrentUserProfile />
+      </ProtectedRoutes>
+    )
+  },
+  {
+    path: "/profile/:userId",
+    element: (
+      <ProtectedRoutes>
+        <Profile />
+      </ProtectedRoutes>
+    ),
   },
   // admin ke liye yha se start hoga
   {

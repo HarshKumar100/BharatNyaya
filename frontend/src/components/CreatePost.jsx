@@ -12,7 +12,7 @@ import { setPosts } from '@/redux/postSlice';
 
 const CreatePost = ({ open, setOpen }) => {
   const imageRef = useRef();
-  const [file, setFile] = useState("");
+  const [file, setFile] = useState(null);
   const [caption, setCaption] = useState("");
   const [imagePreview, setImagePreview] = useState("");
   const [loading, setLoading] = useState(false);
@@ -20,78 +20,150 @@ const CreatePost = ({ open, setOpen }) => {
   const {posts} = useSelector(store=>store.post);
   const dispatch = useDispatch();
 
+  // Reset form state
+  const resetForm = () => {
+    setFile(null);
+    setCaption("");
+    setImagePreview("");
+    setLoading(false);
+  };
+
   const fileChangeHandler = async (e) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setFile(file);
-      const dataUrl = await readFileAsDataURL(file);
-      setImagePreview(dataUrl);
+    const selectedFile = e.target.files?.[0];
+    if (selectedFile) {
+      try {
+        setFile(selectedFile);
+        const dataUrl = await readFileAsDataURL(selectedFile);
+        setImagePreview(dataUrl);
+      } catch (error) {
+        toast.error("Error loading image");
+        setFile(null);
+        setImagePreview("");
+      }
     }
-  }
+  };
 
   const createPostHandler = async (e) => {
+    e.preventDefault();
+    
+    if (!caption.trim() && !file) {
+      toast.error("Please add a caption or image");
+      return;
+    }
+
     const formData = new FormData();
-    formData.append("caption", caption);
-    if (imagePreview) formData.append("image", file);
+    formData.append("caption", caption.trim());
+    if (file) formData.append("image", file);
+
     try {
       setLoading(true);
+      
       const res = await axios.post('http://localhost:8080/api/v1/post/addpost', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         },
         withCredentials: true
       });
+
       if (res.data.success) {
-        dispatch(setPosts([res.data.post, ...posts]));// [1] -> [1,2] -> total element = 2
+        // Add the new post to the existing posts
+        const newPosts = [res.data.post, ...posts];
+        dispatch(setPosts(newPosts));
+        
         toast.success(res.data.message);
+        
+        // Reset form and close dialog
+        resetForm();
         setOpen(false);
+      } else {
+        toast.error(res.data.message || "Failed to create post");
+        setLoading(false);
       }
     } catch (error) {
-      toast.error(error.response.data.message);
-    } finally {
+      console.error("Error creating post:", error);
+      toast.error(error.response?.data?.message || "Failed to create post");
       setLoading(false);
     }
-  }
+  };
+
+  // When dialog is closed, reset the form
+  const handleDialogClose = (isOpen) => {
+    if (!isOpen) {
+      resetForm();
+      setOpen(false);
+    }
+  };
 
   return (
-    <Dialog open={open}>
-      <DialogContent onInteractOutside={() => setOpen(false)}>
-        <DialogHeader className='text-center font-semibold'>Create New Post</DialogHeader>
-        <div className='flex gap-3 items-center'>
-          <Avatar>
-            <AvatarImage src={user?.profilePicture} alt="img" />
-            <AvatarFallback>CN</AvatarFallback>
-          </Avatar>
-          <div>
-            <h1 className='font-semibold text-xs'>{user?.username}</h1>
-            <span className='text-gray-600 text-xs'>Bio here...</span>
-          </div>
-        </div>
-        <Textarea value={caption} onChange={(e) => setCaption(e.target.value)} className="focus-visible:ring-transparent border-none" placeholder="Write a caption..." />
-        {
-          imagePreview && (
-            <div className='w-full h-64 flex items-center justify-center'>
-              <img src={imagePreview} alt="preview_img" className='object-cover h-full w-full rounded-md' />
+    <Dialog open={open} onOpenChange={handleDialogClose}>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader className="text-center font-semibold">Create New Post</DialogHeader>
+        <form onSubmit={createPostHandler}>
+          <div className='flex gap-3 items-center'>
+            <Avatar>
+              <AvatarImage src={user?.profilePicture} alt={user?.username} />
+              <AvatarFallback>{user?.username?.[0]?.toUpperCase() || 'U'}</AvatarFallback>
+            </Avatar>
+            <div>
+              <h1 className='font-semibold text-xs'>{user?.username || user?.fullname}</h1>
             </div>
-          )
-        }
-        <input ref={imageRef} type='file' className='hidden' onChange={fileChangeHandler} />
-        <Button onClick={() => imageRef.current.click()} className='w-fit mx-auto bg-[#0095F6] hover:bg-[#258bcf] '>Select from computer</Button>
-        {
-          imagePreview && (
-            loading ? (
-              <Button>
-                <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-                Please wait
-              </Button>
-            ) : (
-              <Button onClick={createPostHandler} type="submit" className="w-full">Post</Button>
-            )
-          )
-        }
+          </div>
+
+          <Textarea 
+            value={caption} 
+            onChange={(e) => setCaption(e.target.value)} 
+            className="focus-visible:ring-transparent border-none mt-4" 
+            placeholder="Write a caption..." 
+            disabled={loading}
+          />
+
+          {imagePreview && (
+            <div className='w-full max-h-64 my-4 overflow-hidden'>
+              <img 
+                src={imagePreview} 
+                alt="preview" 
+                className='object-contain w-full h-full rounded-md' 
+              />
+            </div>
+          )}
+
+          <input 
+            ref={imageRef} 
+            type='file' 
+            accept="image/*"
+            className='hidden' 
+            onChange={fileChangeHandler}
+            disabled={loading}
+          />
+
+          <div className="flex flex-col gap-4 mt-4">
+            <Button 
+              type="button"
+              onClick={() => imageRef.current?.click()} 
+              variant="outline"
+              className='w-full'
+              disabled={loading}
+            >
+              Select from computer
+            </Button>
+
+            <Button 
+              type="submit" 
+              className="w-full" 
+              disabled={loading || (!caption.trim() && !file)}
+            >
+              {loading ? (
+                <>
+                  <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                  Creating post...
+                </>
+              ) : 'Post'}
+            </Button>
+          </div>
+        </form>
       </DialogContent>
     </Dialog>
-  )
-}
+  );
+};
 
-export default CreatePost
+export default CreatePost;

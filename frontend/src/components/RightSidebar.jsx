@@ -12,21 +12,28 @@ const RightSidebar = () => {
         <div className='flex items-center justify-between'>
           <div className='flex items-center gap-2'>
             <Link to={`/profile/${user?._id}`} className="transition-transform hover:scale-105">
-              <Avatar className="ring-2 ring-transparent hover:ring-blue-200">
-                <AvatarImage src={user?.profilePicture} alt="post_image" />
-                <AvatarFallback>CN</AvatarFallback>
+              <Avatar className="h-10 w-10 ring-2 ring-offset-2 ring-gray-200">
+                <AvatarImage 
+                  src={user?.profile?.profilePhoto} 
+                  alt={user?.fullname}
+                  className="object-cover" 
+                />
+                <AvatarFallback className='bg-gradient-to-br from-blue-400 to-purple-400 text-white'>
+                  {user?.fullname?.split(' ').map(name => name[0]).join('')}
+                </AvatarFallback>
               </Avatar>
             </Link>
             <div>
-              <h1 className='font-semibold text-sm'>
-                <Link 
-                  to={`/profile/${user?._id}`}
-                  className="hover:text-blue-600 transition-colors"
-                >
-                  {user?.username}
-                </Link>
-              </h1>
-              <span className='text-gray-600 text-sm'>{user?.bio || 'Bio here...'}</span>
+              <Link 
+                to={`/profile/${user?._id}`}
+                className="hover:text-blue-600 transition-colors"
+              >
+                <h1 className='font-semibold text-sm'>{user?.fullname}</h1>
+              </Link>
+              <div className='text-xs space-y-0.5'>
+                <p className='text-gray-500'>{user?.email}</p>
+                <p className='text-gray-600'>{user?.role === 'lawyer' ? 'Lawyer' : 'Lawyer Seeker'}</p>
+              </div>
             </div>
           </div>
           <button className="text-sm text-blue-500 font-medium hover:text-blue-600 hover:underline transition-colors">
