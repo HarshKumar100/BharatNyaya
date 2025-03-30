@@ -36,7 +36,7 @@ const LatestLawyers = () => {
                 </h2>
                 <h1 className="mt-2 text-5xl font-extrabold leading-tight">
                 Top Experienced Lawyers & Advocates
-                </h1>
+            </h1>
                 <p className="mt-4 text-lg opacity-90 max-w-3xl mx-auto">
                 Connect with India's most qualified and experienced legal professionals
                 </p>
@@ -64,7 +64,7 @@ const LatestLawyers = () => {
                                 <h3 className="text-xl font-medium text-gray-900">No Lawyers & Advocates Available</h3>
                                 <p className="mt-2 text-gray-500">Please check back later for updated listings.</p>
                             </motion.div>
-                        </div>
+                    </div>
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                             {allLawyers?.slice(0, 6).map((lawyer, index) => (
@@ -85,8 +85,8 @@ const LatestLawyers = () => {
                                         <div className="text-white">
                                             <p className="font-semibold text-lg">View Profile</p>
                                             <p className="text-sm opacity-90">Click to see full details</p>
-                                        </div>
-                                    </div>
+                </div>
+            </div>
                                 </motion.div>
                             ))}
                         </div>
@@ -140,15 +140,15 @@ const LatestLawyers = () => {
                                 <div className="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mb-4 transform group-hover:scale-110 group-hover:bg-indigo-600 transition-all duration-300">
                                     <div className="text-indigo-600 group-hover:text-white transition-colors duration-300">
                                         {feature.icon}
-                                    </div>
-                                </div>
+                    </div>
+                </div>
                                 <h3 className="text-lg font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors duration-300">
                                     {feature.title}
                                 </h3>
                                 <p className="text-gray-600 mt-2 group-hover:text-gray-700 transition-colors duration-300">
                                     {feature.description}
-                                </p>
-                            </div>
+                        </p>
+                    </div>
                         </motion.div>
                     ))}
                 </div>
@@ -204,8 +204,8 @@ const LatestLawyers = () => {
                                         <div className="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mb-4 transform group-hover:rotate-6 group-hover:scale-110 group-hover:bg-indigo-600 transition-all duration-300">
                                             <div className="text-indigo-600 group-hover:text-white transition-colors duration-300">
                                                 {area.icon}
-                                            </div>
-                                        </div>
+                    </div>
+                </div>
                                         <h3 className="text-xl font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors duration-300">
                                             {area.title}
                                         </h3>
@@ -225,8 +225,8 @@ const LatestLawyers = () => {
                                                 </li>
                                             ))}
                                         </ul>
-                                    </div>
-                                </div>
+                    </div>
+                </div>
                             </motion.div>
                         ))}
                     </div>
