@@ -15,9 +15,9 @@ const LatestLawyerCards = ({lawyer}) => {
                 <p className='text-sm text-gray-600'>{lawyer?.description}</p>
             </div>
             <div className='flex items-center gap-2 mt-4'>
-                <Badge className={'text-blue-700 font-bold'} variant="ghost">{lawyer?.position} Positions</Badge>
+                <Badge className={'text-blue-700 font-bold'} variant="ghost">{lawyer?.position} Cases</Badge>
                 <Badge className={'text-[#F83002] font-bold'} variant="ghost">{lawyer?.lawyerType}</Badge>
-                <Badge className={'text-[#7209b7] font-bold'} variant="ghost">{lawyer?.salary}LPA</Badge>
+                {/* <Badge className={'text-[#7209b7] font-bold'} variant="ghost">{lawyer?.salary}LPA</Badge> */}
             </div>
 
         </div>

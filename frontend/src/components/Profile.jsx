@@ -10,7 +10,9 @@ import { Badge } from './ui/badge';
 import { 
   AtSign, Mail, Phone, MapPin, Calendar, Clock, 
   FileText, AlertCircle, CheckCircle2, Scale, 
-  MessageCircle, User, Shield, Activity, Building2, InfoIcon, Phone2, Bell 
+  MessageCircle, User, Shield, Activity, Building2, InfoIcon, 
+  // Phone2
+   Bell 
 } from 'lucide-react';
 import { toast } from 'sonner';
 import axios from 'axios';

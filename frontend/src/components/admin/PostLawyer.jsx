@@ -66,7 +66,7 @@ const PostLawyer = () => {
                 <form onSubmit = {submitHandler} className='p-8 max-w-4xl border border-gray-200 shadow-lg rounded-md'>
                     <div className='grid grid-cols-2 gap-2'>
                         <div>
-                            <Label>Title</Label>
+                            <Label>Name</Label>
                             <Input
                                 type="text"
                                 name="title"
@@ -76,7 +76,7 @@ const PostLawyer = () => {
                             />
                         </div>
                         <div>
-                            <Label>Description</Label>
+                            <Label>Bio</Label>
                             <Input
                                 type="text"
                                 name="description"
@@ -86,7 +86,7 @@ const PostLawyer = () => {
                             />
                         </div>
                         <div>
-                            <Label>Requirements</Label>
+                            <Label>Qualification</Label>
                             <Input
                                 type="text"
                                 name="requirements"
@@ -96,7 +96,7 @@ const PostLawyer = () => {
                             />
                         </div>
                         <div>
-                            <Label>Salary</Label>
+                            <Label>Fees</Label>
                             <Input
                                 type="text"
                                 name="salary"
@@ -106,7 +106,7 @@ const PostLawyer = () => {
                             />
                         </div>
                         <div>
-                            <Label>Location</Label>
+                            <Label>Practice Area</Label>
                             <Input
                                 type="text"
                                 name="location"
@@ -116,7 +116,7 @@ const PostLawyer = () => {
                             />
                         </div>
                         <div>
-                            <Label>Lawyer Type</Label>
+                            <Label>Lawyer Case Type</Label>
                             <Input
                                 type="text"
                                 name="lawyerType"
@@ -136,7 +136,7 @@ const PostLawyer = () => {
                             />
                         </div>
                         <div>
-                            <Label>No of Postion</Label>
+                            <Label>Number of Cases</Label>
                             <Input
                                 type="number"
                                 name="position"
