@@ -33,7 +33,7 @@ const SuggestedUsers = () => {
                             </Link>
                             <div className='text-xs space-y-0.5'>
                                 <p className='text-gray-500'>{user?.email}</p>
-                                <p className='text-gray-600'>{user?.role === 'lawyer' ? 'Lawyer' : 'Lawyer Seeker'}</p>
+                                <p className='text-gray-600'>{user?.role === 'lawyer' ? 'Lawyer' : 'Lawyer'}</p>
                             </div>
                         </div>
                     </div>
